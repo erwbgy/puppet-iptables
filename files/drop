@@ -1,0 +1,20 @@
+# Drop commonly probed ports
+# DROP telnet
+-A INPUT -p tcp --dport 23 -j DROP
+# DROP epmap
+-A INPUT -p tcp --dport 135 -j DROP
+# DROP netbios
+-A INPUT -p tcp --dport 137 -j DROP
+-A INPUT -p udp --dport 137 -j DROP
+-A INPUT -p tcp --dport 138 -j DROP
+-A INPUT -p udp --dport 138 -j DROP
+-A INPUT -p tcp --dport 139 -j DROP
+# DROP Microsoft DS
+-A INPUT -p tcp --dport 445 -j DROP
+# DROP SQL server
+-A INPUT -p tcp --dport 1433 -j DROP
+-A INPUT -p udp --dport 1433 -j DROP
+-A INPUT -p tcp --dport 1434 -j DROP
+-A INPUT -p udp --dport 1434 -j DROP
+# DROP SSC-agent
+-A INPUT -p tcp --dport 2967 -j DROP

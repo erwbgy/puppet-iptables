@@ -1,41 +1,16 @@
-# == Class: iptables
-#
-# Full description of class iptables here.
-#
-# === Parameters
-#
-# Document parameters here.
-#
-# [*sample_parameter*]
-#   Explanation of what this parameter affects and what it defaults to.
-#   e.g. "Specify one or more upstream ntp servers as an array."
-#
-# === Variables
-#
-# Here you should define a list of variables that this module would require.
-#
-# [*sample_variable*]
-#   Explanation of how this variable affects the funtion of this class and if it
-#   has a default. e.g. "The parameter enc_ntp_servers must be set by the
-#   External Node Classifier as a comma separated list of hostnames." (Note,
-#   global variables should not be used in preference to class parameters  as of
-#   Puppet 2.6.)
-#
-# === Examples
-#
-#  class { iptables:
-#    servers => [ 'pool.ntp.org', 'ntp.local.company.com' ]
-#  }
-#
-# === Authors
-#
-# Author Name <author@domain.com>
-#
-# === Copyright
-#
-# Copyright 2011 Your name here, unless otherwise noted.
-#
 class iptables {
-
-
+  define port ($port, $protocol='tcp') {
+    @file { "/var/lib/puppet/workspace/iptables.d/allow_${protocol}_${port}":
+      owner   => 'puppet',
+      group   => 'puppet',
+      mode    => '0600',
+      content => "-A INPUT -m state --state NEW -m ${protocol} -p ${protocol} --dport ${port} -j ACCEPT\n",
+      require => Class["iptables::config"],
+      notify  => Class["iptables::update"],
+    }
+  }
+  define allow ($port, $protocol='tcp') {
+    realize( File["/var/lib/puppet/workspace/iptables.d/allow_${protocol}_${port}"] )
+  }
+  include iptables::virtual, iptables::config, iptables::update, iptables::install, iptables::service
 }

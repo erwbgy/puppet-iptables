@@ -1,5 +1,5 @@
 name    'erwbgy-iptables'
-version '0.1.0'
+version '0.2.0'
 author 'Keith Burdis'
 license 'Apache License, Version 2.0'
 summary 'manage iptables allow and deny rules'

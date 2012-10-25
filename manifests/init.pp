@@ -3,4 +3,5 @@ class iptables {
   include iptables::update
   include iptables::install
   include iptables::service
+  include iptables::default
 }

@@ -1,0 +1,37 @@
+#!/usr/bin/perl
+opendir(DIR,'/root/iptables.d');
+my %allow = map { $_ => 1 } grep { /^allow_/ } readdir DIR;
+my %deny  = map { $_ => 1 } grep { /^deny_/ } readdir DIR;
+closedir(DIR);
+
+open(OUTPUT, ">/root/iptables.new") or die "$!\n";
+print OUTPUT <<'EOT';
+# Firewall configuration managed by puppet
+# Manual customizations will be overwritten
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+-A INPUT -p icmp -j ACCEPT
+-A INPUT -i lo -j ACCEPT
+EOT
+foreach (sort keys %allow) {
+  my ($protocol, $port) =~ /^allow_(...)_(\d+)$/;
+  print OUTPUT "-A INPUT -m state --state NEW -m ${protocol} -p ${protocol} --dport ${port} -j ACCEPT\n";
+  # Allow wins over deny as we deny lots by default
+  delete $deny{"deny_${protocol}_${port}"}
+    if exists $deny{"deny_${protocol}_${port}"};
+}
+foreach (sort keys %deny) {
+  my ($protocol, $port) =~ /^allow_(...)_(\d+)$/;
+  print OUTPUT "-A INPUT -p ${protocol} --dport ${port} -j DROP\n";
+}
+print OUTPUT <<'EOT';
+-A INPUT -j LOG --log-prefix "DROP INPUT: "
+-A INPUT -j REJECT --reject-with icmp-host-prohibited
+-A FORWARD -j REJECT --reject-with icmp-host-prohibited
+COMMIT
+EOT
+close(OUTPUT);
+system("mv /root/iptables.new /etc/sysconfig/iptables");

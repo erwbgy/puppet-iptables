@@ -42,23 +42,23 @@ module requires the same port to be open or closed.
 * By default the following commonly probed ports are dropped to avoid filling
   up the logs:
 
-** telnet: tcp/23
+    telnet: tcp/23
 
-** epmap: tcp/135
+    epmap: tcp/135
 
-** netbios: tcp/137, udp/137, tcp/138, udp/138, tcp/139
+    netbios: tcp/137, udp/137, tcp/138, udp/138, tcp/139
 
-** Microsoft DS: tcp/445
+    Microsoft DS: tcp/445
 
-** Microsoft SQL server: tcp/1433, udp/1433, tcp/1434, udp/1434
+    Microsoft SQL server: tcp/1433, udp/1433, tcp/1434, udp/1434
 
-** SSC-agent: udp/2967
+    SSC-agent: udp/2967
 
 * By default access is allowed to:
 
-** SSH: tcp/22
+    SSH: tcp/22
 
-** SNMP: tcp/161 and udp/161
+    SNMP: tcp/161 and udp/161
 
 * By default ICMP and localhost traffic is allowed
 

@@ -1,10 +1,13 @@
 #!/usr/bin/perl
 opendir(DIR,'/root/iptables.d');
 my %allow = map { $_ => 1 } grep { /^allow_/ } readdir DIR;
+closedir(DIR);
+opendir(DIR,'/root/iptables.d');
 my %deny  = map { $_ => 1 } grep { /^deny_/ } readdir DIR;
 closedir(DIR);
 
-open(OUTPUT, ">/root/iptables.new") or die "$!\n";
+open(OUTPUT, ">/root/iptables.d/iptables.new") or die "$!\n";
+# header
 print OUTPUT <<'EOT';
 # Firewall configuration managed by puppet
 # Manual customizations will be overwritten
@@ -16,17 +19,24 @@ print OUTPUT <<'EOT';
 -A INPUT -p icmp -j ACCEPT
 -A INPUT -i lo -j ACCEPT
 EOT
+# allow rules
 foreach (sort keys %allow) {
-  my ($protocol, $port) =~ /^allow_(...)_(\d+)$/;
+  /^allow_(...)_(\d+)_/;
+  my ($protocol, $port) = ($1, $2);
+  die "Bad input: '$_'" unless $protocol and $port;
   print OUTPUT "-A INPUT -m state --state NEW -m ${protocol} -p ${protocol} --dport ${port} -j ACCEPT\n";
   # Allow wins over deny as we deny lots by default
   delete $deny{"deny_${protocol}_${port}"}
     if exists $deny{"deny_${protocol}_${port}"};
 }
+# deny rules
 foreach (sort keys %deny) {
-  my ($protocol, $port) =~ /^allow_(...)_(\d+)$/;
+  /^deny_(...)_(\d+)_/;
+  my ($protocol, $port) = ($1, $2);
+  die "Bad input: '$_'" unless $protocol and $port;
   print OUTPUT "-A INPUT -p ${protocol} --dport ${port} -j DROP\n";
 }
+# footer
 print OUTPUT <<'EOT';
 -A INPUT -j LOG --log-prefix "DROP INPUT: "
 -A INPUT -j REJECT --reject-with icmp-host-prohibited
@@ -34,4 +44,5 @@ print OUTPUT <<'EOT';
 COMMIT
 EOT
 close(OUTPUT);
-system("mv /root/iptables.new /etc/sysconfig/iptables");
+system("mv /root/iptables.d/iptables.new /etc/sysconfig/iptables");
+system("/sbin/restorecon /etc/sysconfig/iptables");

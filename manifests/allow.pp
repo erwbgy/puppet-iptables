@@ -3,7 +3,7 @@ define iptables::allow (
   $protocol = 'tcp'
 ) {
   include iptables
-  file { "/root/iptables.d/allow_${protocol}_${port}_${title}":
+  file { "/root/iptables.d/allow_${port}_${protocol}_${title}":
     ensure  => file,
     owner   => 'puppet',
     group   => 'puppet',

@@ -3,7 +3,7 @@ define iptables::deny (
   $protocol = 'tcp'
 ) {
   include iptables
-  file { "/root/iptables.d/deny_${protocol}_${port}_${title}":
+  file { "/root/iptables.d/deny_${port}_${protocol}_${title}":
     ensure  => file,
     owner   => 'puppet',
     group   => 'puppet',

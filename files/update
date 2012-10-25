@@ -21,9 +21,9 @@ print OUTPUT <<'EOT';
 EOT
 # allow rules
 foreach (sort keys %allow) {
-  /^allow_(...)_(\d+)_/;
-  my ($protocol, $port) = ($1, $2);
-  die "Bad input: '$_'" unless $protocol and $port;
+  /^allow_(\d+)_(...)_/;
+  my ($port, $protocol) = ($1, $2);
+  die "Bad input: '$_'\n" unless $protocol and $port;
   print OUTPUT "-A INPUT -m state --state NEW -m ${protocol} -p ${protocol} --dport ${port} -j ACCEPT\n";
   # Allow wins over deny as we deny lots by default
   delete $deny{"deny_${protocol}_${port}"}
@@ -31,9 +31,9 @@ foreach (sort keys %allow) {
 }
 # deny rules
 foreach (sort keys %deny) {
-  /^deny_(...)_(\d+)_/;
-  my ($protocol, $port) = ($1, $2);
-  die "Bad input: '$_'" unless $protocol and $port;
+  /^deny_(\d+)_(...)_/;
+  my ($port, $protocol) = ($1, $2);
+  die "Bad input: '$_'\n" unless $protocol and $port;
   print OUTPUT "-A INPUT -p ${protocol} --dport ${port} -j DROP\n";
 }
 # footer

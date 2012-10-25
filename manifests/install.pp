@@ -1,3 +1,5 @@
 class iptables::install {
-  realize( Package['iptables'] )
+  package { 'iptables':
+    ensure => installed,
+  }
 }

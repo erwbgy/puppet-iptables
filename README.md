@@ -8,6 +8,11 @@ protocol (tcp or udp) and the port number.  Creating these files triggers an
 update script that combines all the entries together into a new
 /etc/sysconfig/iptables file and restarts the iptables service.
 
+Use your class name in the resource title to avoid resource clashes if another
+module requires the same port to be open or closed.  You don't need to include
+the protocol and port in the title like I have done, the resource just needs to
+be unique.
+
 ## iptables::allow
 
 Allow access to the specified port.
@@ -16,10 +21,8 @@ Allow access to the specified port.
 
 *protocol*: either 'tcp' or 'udp'. Default: 'tcp'
 
-    iptables::allow { 'my::class': port => '22', protocol => 'tcp' }
+    iptables::allow { 'my-class-tcp-22': port => '22', protocol => 'tcp' }
 
-Use your class name as the resource title to avoid resource clashes if another
-module requires the same port to be open or closed.
 
 ## iptables::deny
 
@@ -29,10 +32,12 @@ Deny access to the specified port.
 
 *protocol*: either 'tcp' or 'udp'. Default: 'tcp'
 
-    iptables::allow { 'my::class': port => '22', protocol => 'tcp' }
+    iptables::allow { 'my-class-tcp-21': port => '21', protocol => 'tcp' }
 
-Use your class name as the resource title to avoid resource clashes if another
-module requires the same port to be open or closed.
+Use your class name in the resource title to avoid resource clashes if another
+module requires the same port to be open or closed.  You don't need to include
+the protocol and port in the title like I have done, the resource just needs to
+be unique.
 
 ## Notes
 

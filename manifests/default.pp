@@ -1,6 +1,9 @@
 class iptables::default {
   # Enable SSH access
   iptables::allow { 'iptables': port => 22,  protocol => 'tcp', }
+  # Enable SNMP access
+  iptables::allow { 'iptables': port => 161, protocol => 'tcp', }
+  iptables::allow { 'iptables': port => 161, protocol => 'udp', }
 
   # Drop commonly probed ports
   # DROP telnet

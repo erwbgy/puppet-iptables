@@ -10,8 +10,8 @@ update script that combines all the entries together into a new
 
 Use your class name in the resource title to avoid resource clashes if another
 module requires the same port to be open or closed.  You don't need to include
-the protocol and port in the title like I have done, the resource just needs to
-be unique.
+the protocol and port in the title like I have done in the examples below, the
+resource just needs to be unique.
 
 ## iptables::allow
 
@@ -21,8 +21,9 @@ Allow access to the specified port.
 
 *protocol*: either 'tcp' or 'udp'. Default: 'tcp'
 
-    iptables::allow { 'my-class-tcp-22': port => '22', protocol => 'tcp' }
+Example:
 
+    iptables::allow { 'my-class-tcp-22': port => '22', protocol => 'tcp' }
 
 ## iptables::deny
 
@@ -32,12 +33,9 @@ Deny access to the specified port.
 
 *protocol*: either 'tcp' or 'udp'. Default: 'tcp'
 
-    iptables::allow { 'my-class-tcp-21': port => '21', protocol => 'tcp' }
+Example:
 
-Use your class name in the resource title to avoid resource clashes if another
-module requires the same port to be open or closed.  You don't need to include
-the protocol and port in the title like I have done, the resource just needs to
-be unique.
+    iptables::allow { 'my-class-tcp-21': port => '21', protocol => 'tcp' }
 
 ## Notes
 

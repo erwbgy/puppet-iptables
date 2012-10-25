@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Puppet-iptables : Puppet module to manage iptables allow and deny rules" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Puppet-iptables</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/erwbgy/puppet-iptables">View on GitHub</a>
+
+          <h1 id="project_title">Puppet-iptables</h1>
+          <h2 id="project_tagline">Puppet module to manage iptables allow and deny rules</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/erwbgy/puppet-iptables/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/erwbgy/puppet-iptables/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>puppet-iptables</h1>
+
+<p>Manage iptables incoming allow and deny rules</p>
+
+<p>The iptables::allow and iptables::deny resources create files under
+/root/iptables.d with a filename including the action (allow or deny), the
+protocol (tcp or udp) and the port number.  Creating these files triggers an
+update script that combines all the entries together into a new
+/etc/sysconfig/iptables file and restarts the iptables service.</p>
+
+<h2>iptables::allow</h2>
+
+<p>Allow access to the specified port.</p>
+
+<p><em>port</em>: the incoming port number. Required.</p>
+
+<p><em>protocol</em>: either 'tcp' or 'udp'. Default: 'tcp'</p>
+
+<pre><code>iptables::allow { 'my::class': port =&gt; '22', protocol =&gt; 'tcp' }
+</code></pre>
+
+<p>Use your class name as the resource title to avoid resource clashes if another
+module requires the same port to be open or closed.</p>
+
+<h2>iptables::deny</h2>
+
+<p>Deny access to the specified port.</p>
+
+<p><em>port</em>: the incoming port number. Required.</p>
+
+<p><em>protocol</em>: either 'tcp' or 'udp'. Default: 'tcp'</p>
+
+<pre><code>iptables::allow { 'my::class': port =&gt; '22', protocol =&gt; 'tcp' }
+</code></pre>
+
+<p>Use your class name as the resource title to avoid resource clashes if another
+module requires the same port to be open or closed.</p>
+
+<h2>Notes</h2>
+
+<ul>
+<li><p>All attempts to access ports not explicitly allowed or denied are logged to
+syslog</p></li>
+<li>
+<p>By default the following commonly probed ports are dropped to avoid filling
+up the logs:</p>
+
+<p>telnet: tcp/23</p>
+
+<p>epmap: tcp/135</p>
+
+<p>netbios: tcp/137, udp/137, tcp/138, udp/138, tcp/139</p>
+
+<p>Microsoft DS: tcp/445</p>
+
+<p>Microsoft SQL server: tcp/1433, udp/1433, tcp/1434, udp/1434</p>
+
+<p>SSC-agent: udp/2967</p>
+</li>
+<li>
+<p>By default access is allowed to:</p>
+
+<p>SSH: tcp/22</p>
+
+<p>SNMP: tcp/161 and udp/161</p>
+</li>
+<li><p>By default ICMP and localhost traffic is allowed</p></li>
+<li><p>Allow resources override deny resources so if a port is both allowed and
+denied then it will be allowed in the iptables configuration</p></li>
+</ul><h2>Support</h2>
+
+<p>License: Apache License, Version 2.0</p>
+
+<p>GitHub URL: <a href="https://github.com/erwbgy/puppet-iptables">https://github.com/erwbgy/puppet-iptables</a></p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Puppet-iptables maintained by <a href="https://github.com/erwbgy">erwbgy</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>

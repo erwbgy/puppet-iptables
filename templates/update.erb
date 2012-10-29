@@ -5,7 +5,7 @@ my %allow_files = map { $_ => 1 } grep { /^allow_/ } readdir DIR;
 closedir(DIR);
 my %allow;
 foreach (keys %allow_files) {
-  /^allow_(\d+)_(...)_/;
+  /^allow_(\d+)_(...)/;
   my ($port, $protocol) = ($1, $2);
   unless ($protocol and $port) {
     warn "Bad filename: '$_'\n";
@@ -20,7 +20,7 @@ my %drop_files  = map { $_ => 1 } grep { /^drop_/ } readdir DIR;
 closedir(DIR);
 my %drop;
 foreach (keys %drop_files) {
-  /^drop_(\d+)_(...)_/;
+  /^drop_(\d+)_(...)/;
   my ($port, $protocol) = ($1, $2);
   unless ($protocol and $port) {
     warn "Bad filename: '$_'\n";

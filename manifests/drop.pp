@@ -1,9 +1,9 @@
-define iptables::deny (
+define iptables::drop (
   $port,
   $protocol = 'tcp'
 ) {
   include iptables
-  file { "/root/iptables.d/deny_${port}_${protocol}_${title}":
+  file { "/root/iptables.d/drop_${port}_${protocol}_${title}":
     ensure  => file,
     owner   => 'puppet',
     group   => 'puppet',

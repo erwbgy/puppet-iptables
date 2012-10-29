@@ -1,8 +1,8 @@
 class iptables::config {
   # defaults
   File {
-    owner => 'puppet',
-    group => 'puppet',
+    owner => 'root',
+    group => 'root',
     mode  => '0600',
   }
   file { '/root/iptables.d':
@@ -12,7 +12,7 @@ class iptables::config {
   file { '/root/iptables.d/update':
     ensure  => present,
     mode    => '0700',
-    source  => 'puppet:///modules/iptables/update',
+    content => template('iptables/update.erb'),
     notify  => Class['iptables::update'],
     require => File['/root/iptables.d'],
   }

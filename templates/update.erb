@@ -42,8 +42,12 @@ print OUTPUT <<'EOT';
 :FORWARD ACCEPT [0:0]
 :OUTPUT ACCEPT [0:0]
 -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+<% if $allow_icmp == 'true' -%>
 -A INPUT -p icmp -j ACCEPT
+<% end %>
+<% if $allow_localhost == 'true' -%>
 -A INPUT -i lo -j ACCEPT
+<% end %>
 EOT
 # allow rules
 foreach my $port (sort keys %allow) {
@@ -59,13 +63,15 @@ foreach my $port (sort keys %drop) {
 }
 # footer
 print OUTPUT <<'EOT';
+<% if $log_failure == 'true' -%>
 -A INPUT -j LOG --log-prefix "DROP INPUT: "
+<% end %>
 -A INPUT -j REJECT --reject-with icmp-host-prohibited
 -A FORWARD -j REJECT --reject-with icmp-host-prohibited
 COMMIT
 EOT
 close(OUTPUT);
 system("mv $tmpfile /etc/sysconfig/iptables");
-<% if $selinux == 'true' -%>
+<% if scope.lookupvar("$::selinux") == 'true' -%>
 system("/sbin/restorecon /etc/sysconfig/iptables");
 <% end -%>

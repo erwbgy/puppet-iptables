@@ -9,7 +9,7 @@ class iptables (
   include iptables::install
   include iptables::service
   if $use_hiera {
-    $iptables = hiera_hash('iptables')
+    $iptables = hiera_hash('iptables', undef)
     if !$iptables {
       include iptables::default
     }

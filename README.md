@@ -3,7 +3,7 @@
 Manage iptables incoming rules
 
 The recommended usage is to place the configuration under an iptables hash in
-hiera and just include the limits module in your puppet configuration:
+hiera and just include the iptables module in your puppet configuration:
 
     include iptables
 
@@ -101,6 +101,18 @@ Deny access to the specified port without logging.
 Example:
 
     iptables::drop { 'tcp/21': port => '21', protocol => 'tcp' }
+
+## iptables::clean
+
+Remove all files under /root/iptables.d.  This has the effect of starting with
+a clean configuration is required if you want to remove rules for ports defined
+previously.
+
+To use just temporarily:
+
+    include iptables::clean
+
+in a host configuration.
 
 ## Support
 

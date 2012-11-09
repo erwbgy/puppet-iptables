@@ -4,9 +4,10 @@ class iptables (
   $allow_localhost = true,
   $log_failures    = true
 ) {
-  stage { 'first': before => Stage['main'] }
+  if ! defined(Stage['first']) {
+    stage { 'first': before => Stage['main'] }
+  }
   class { 'iptables::clean': stage => 'first' }
-  include iptables::clean
   include iptables::update
   include iptables::install
   include iptables::service

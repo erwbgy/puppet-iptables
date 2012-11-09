@@ -57,9 +57,9 @@ Notes:
 
 * *logfailures*: whether or not to log failed connections that are not explicitly dropped. Default: true
 
-* *allow_icmp: whether or not to allow all ICMP traffic. Default: true
+* *allow_icmp*: whether or not to allow all ICMP traffic. Default: true
 
-* *allow_localhost: whether or not to allow all localhost (127.0.0.0/8) traffic. Default: true
+* *allow_localhost*: whether or not to allow all localhost (127.0.0.0/8) traffic. Default: true
 
 * *ports* hash:
 

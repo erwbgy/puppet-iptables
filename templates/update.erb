@@ -32,7 +32,7 @@ foreach (keys %drop_files) {
 }
 
 my $tmpfile = "/root/iptables.d/iptables.new.$$";
-open(OUTPUT, ">$tempfile") or die "$!\n";
+open(OUTPUT, ">$tmpfile") or die "$!\n";
 # header
 print OUTPUT <<'EOT';
 # Firewall configuration managed by puppet
@@ -72,6 +72,6 @@ COMMIT
 EOT
 close(OUTPUT);
 system("mv $tmpfile /etc/sysconfig/iptables");
-<% if scope.lookupvar("$::selinux") == 'true' -%>
+<% if scope.lookupvar("$selinux") == 'true' -%>
 system("/sbin/restorecon /etc/sysconfig/iptables");
 <% end -%>

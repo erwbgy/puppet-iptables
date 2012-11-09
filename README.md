@@ -38,12 +38,12 @@ Notes:
   like that for port 23 above.
 
 * To avoid any failed connections being logged set the log_failures parameter
-  to false.
+  to 'no'.
 
-* By default all ICMP traffic is allowed.  Set allow_icmp to false to change
+* By default all ICMP traffic is allowed.  Set allow_icmp to 'no' to change
   this.
 
-* By default all localhost traffic is allowed.  Set allow_localhost to false to
+* By default all localhost traffic is allowed.  Set allow_localhost to 'no' to
   change this.
 
 * If no iptables configuration is found then an allow rule is added for tcp/22

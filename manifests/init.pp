@@ -7,7 +7,6 @@ class iptables (
   if ! defined(Stage['first']) {
     stage { 'first': before => Stage['main'] }
   }
-  class { 'iptables::clean': stage => 'first' }
   include iptables::update
   include iptables::install
   include iptables::service

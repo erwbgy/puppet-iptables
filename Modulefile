@@ -1,5 +1,5 @@
 name    'erwbgy-iptables'
-version '0.3.0'
+version '0.3.1'
 source 'git.com:erwbgy/puppet-iptables.git'
 author 'Keith Burdis'
 license 'Apache License, Version 2.0'

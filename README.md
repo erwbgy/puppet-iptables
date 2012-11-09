@@ -9,22 +9,21 @@ hiera and just include the iptables module in your puppet configuration:
 
 Example hiera config:
 
-    iptables:
-      allow_icmp: 'true'
-      allow_localhost: 'true'
-      log_failures: 'true'
-      ports:
-        22:
-          tcp: 'allow'
-        80:
-          tcp: 'allow'
-        23:
-          tcp: 'drop'
-          udp: 'drop'
+    iptables::allow_icmp: 'yes'
+    iptables::allow_localhost: 'yes'
+    iptables::log_failures: 'yes'
+    iptables::ports:
+      22:
+        tcp: 'allow'
+      80:
+        tcp: 'allow'
+      23:
+        tcp: 'drop'
+        udp: 'drop'
 
 This example configures iptables to allow incoming TCP connections to ports 22
 (ssh) and 80 (http), and silently drop all connections to port 23 (telnet).
-All ICMP and locahost connections will be allowed and failed connections to
+All ICMP and localhost connections will be allowed and failed connections to
 other ports will be logged to syslog.
 
 Notes:
@@ -55,20 +54,17 @@ Notes:
 
 ## Parameters
 
-* *logfailures*: whether or not to log failed connections that are not explicitly dropped. Default: true
+* *logfailures*: whether or not to log failed connections that are not explicitly dropped. Possible values: 'yes' or 'no'. Default: 'yes'
 
-* *allow_icmp*: whether or not to allow all ICMP traffic. Default: true
+* *allow_icmp*: whether or not to allow all ICMP traffic. Possible values: 'yes' or 'no'. Default: 'yes'
 
-* *allow_localhost*: whether or not to allow all localhost (127.0.0.0/8) traffic. Default: true
+* *allow_localhost*: whether or not to allow all localhost (127.0.0.0/8) traffic. Possible values: 'yes' or 'no'. Default: 'yes'
 
 * *ports* hash:
 
     * *<port number>* hash: the port number to add a rule for (eg. 22)
         * 'tcp': Possible values are 'allow' or 'drop'.
         * 'udp': Possible values are 'allow' or 'drop'.
-
-* *use_hiera*: set this to false when not using hiera which is useful if
-  calling iptables as a parameterised class. Default: true
 
 ## Implementation
 
@@ -77,6 +73,8 @@ The iptables::allow and iptables::drop resources create files under
 protocol (tcp or udp) and the port number.  Creating these files triggers an
 update script that combines all the entries together into a new
 /etc/sysconfig/iptables file and restarts the iptables service.
+
+The iptables::clean class removes all files under /root/iptables.d.
 
 ## iptables::allow
 
@@ -105,8 +103,8 @@ Example:
 ## iptables::clean
 
 Remove all files under /root/iptables.d.  This has the effect of starting with
-a clean configuration is required if you want to remove rules for ports defined
-previously.
+a clean configuration and is required if you want to remove rules for ports
+defined previously.
 
 To use just temporarily:
 

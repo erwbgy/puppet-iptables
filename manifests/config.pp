@@ -1,8 +1,4 @@
-class iptables::config (
-  $allow_icmp      = true,
-  $allow_localhost = true,
-  $log_failures    = true
-){
+class iptables::config {
   # defaults
   File {
     owner => 'root',

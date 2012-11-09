@@ -33,10 +33,80 @@
       <section id="main_content" class="inner">
         <h1>puppet-iptables</h1>
 
-<p>Manage iptables incoming allow and deny rules</p>
+<p>Manage iptables incoming rules</p>
 
-<p>The iptables::allow and iptables::deny resources create files under
-/root/iptables.d with a filename including the action (allow or deny), the
+<p>The recommended usage is to place the configuration under an iptables hash in
+hiera and just include the limits module in your puppet configuration:</p>
+
+<pre><code>include iptables
+</code></pre>
+
+<p>Example hiera config:</p>
+
+<pre><code>iptables:
+  allow_icmp: 'true'
+  allow_localhost: 'true'
+  log_failures: 'true'
+  ports:
+    22:
+      tcp: 'allow'
+    80:
+      tcp: 'allow'
+    23:
+      tcp: 'drop'
+      udp: 'drop'
+</code></pre>
+
+<p>This example configures iptables to allow incoming TCP connections to ports 22
+(ssh) and 80 (http), and silently drop all connections to port 23 (telnet).
+All ICMP and locahost connections will be allowed and failed connections to
+other ports will be logged to syslog.</p>
+
+<p>Notes:</p>
+
+<ul>
+<li><p>The default policy is to deny all connections and log failures to syslog
+(usually /var/log/messages).</p></li>
+<li><p>To allow connections to a particular port add an allow rule like that for
+port 80 above.</p></li>
+<li><p>To avoid denied connections to a particular port being logged add a drop rule
+like that for port 23 above.</p></li>
+<li><p>To avoid any failed connections being logged set the log_failures parameter
+to false.</p></li>
+<li><p>By default all ICMP traffic is allowed.  Set allow_icmp to false to change
+this.</p></li>
+<li><p>By default all localhost traffic is allowed.  Set allow_localhost to false to
+change this.</p></li>
+<li><p>If no iptables configuration is found then an allow rule is added for tcp/22
+(ssh) like the default iptables configuration.</p></li>
+<li><p>If there is both an allow rule and a drop rule for a port and protocol then
+access is allowed.</p></li>
+</ul><h2>Parameters</h2>
+
+<ul>
+<li><p><em>logfailures</em>: whether or not to log failed connections that are not explicitly dropped. Default: true</p></li>
+<li><p>*allow_icmp: whether or not to allow all ICMP traffic. Default: true</p></li>
+<li><p>*allow_localhost: whether or not to allow all localhost (127.0.0.0/8) traffic. Default: true</p></li>
+<li>
+<p><em>ports</em> hash:</p>
+
+<ul>
+<li>
+<em></em> hash: the port number to add a rule for (eg. 22)
+
+<ul>
+<li>'tcp': Possible values are 'allow' or 'drop'.</li>
+<li>'udp': Possible values are 'allow' or 'drop'.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><em>use_hiera</em>: set this to false when not using hiera which is useful if
+calling iptables as a parameterised class. Default: true</p></li>
+</ul><h2>Implementation</h2>
+
+<p>The iptables::allow and iptables::drop resources create files under
+/root/iptables.d with a filename including the action (allow or drop), the
 protocol (tcp or udp) and the port number.  Creating these files triggers an
 update script that combines all the entries together into a new
 /etc/sysconfig/iptables file and restarts the iptables service.</p>
@@ -47,60 +117,27 @@ update script that combines all the entries together into a new
 
 <p><em>port</em>: the incoming port number. Required.</p>
 
-<p><em>protocol</em>: either 'tcp' or 'udp'. Default: 'tcp'</p>
+<p><em>protocol</em>: either 'tcp' or 'udp'. Required.</p>
 
-<pre><code>iptables::allow { 'my::class': port =&gt; '22', protocol =&gt; 'tcp' }
+<p>Example:</p>
+
+<pre><code>iptables::allow { 'tcp/22': port =&gt; '22', protocol =&gt; 'tcp' }
 </code></pre>
 
-<p>Use your class name as the resource title to avoid resource clashes if another
-module requires the same port to be open or closed.</p>
+<h2>iptables::drop</h2>
 
-<h2>iptables::deny</h2>
-
-<p>Deny access to the specified port.</p>
+<p>Deny access to the specified port without logging.</p>
 
 <p><em>port</em>: the incoming port number. Required.</p>
 
-<p><em>protocol</em>: either 'tcp' or 'udp'. Default: 'tcp'</p>
+<p><em>protocol</em>: either 'tcp' or 'udp'. Required.</p>
 
-<pre><code>iptables::allow { 'my::class': port =&gt; '22', protocol =&gt; 'tcp' }
+<p>Example:</p>
+
+<pre><code>iptables::drop { 'tcp/21': port =&gt; '21', protocol =&gt; 'tcp' }
 </code></pre>
 
-<p>Use your class name as the resource title to avoid resource clashes if another
-module requires the same port to be open or closed.</p>
-
-<h2>Notes</h2>
-
-<ul>
-<li><p>All attempts to access ports not explicitly allowed or denied are logged to
-syslog</p></li>
-<li>
-<p>By default the following commonly probed ports are dropped to avoid filling
-up the logs:</p>
-
-<p>telnet: tcp/23</p>
-
-<p>epmap: tcp/135</p>
-
-<p>netbios: tcp/137, udp/137, tcp/138, udp/138, tcp/139</p>
-
-<p>Microsoft DS: tcp/445</p>
-
-<p>Microsoft SQL server: tcp/1433, udp/1433, tcp/1434, udp/1434</p>
-
-<p>SSC-agent: udp/2967</p>
-</li>
-<li>
-<p>By default access is allowed to:</p>
-
-<p>SSH: tcp/22</p>
-
-<p>SNMP: tcp/161 and udp/161</p>
-</li>
-<li><p>By default ICMP and localhost traffic is allowed</p></li>
-<li><p>Allow resources override deny resources so if a port is both allowed and
-denied then it will be allowed in the iptables configuration</p></li>
-</ul><h2>Support</h2>
+<h2>Support</h2>
 
 <p>License: Apache License, Version 2.0</p>
 

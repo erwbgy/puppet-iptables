@@ -9,7 +9,7 @@ define iptables::rule (
       'allow': { iptables::allow{ "tcp/${port}": port => $port, protocol => 'tcp' } }
       'drop':  { iptables::drop{  "tcp/${port}": port => $port, protocol => 'tcp' } }
       default: {
-        fail("iptables: unknown action '${action}' - use 'allow' or 'drop'")
+        fail("iptables: unknown action '${tcp}' - use 'allow' or 'drop'")
       }
     }
   }
@@ -18,7 +18,7 @@ define iptables::rule (
       'allow': { iptables::allow{ "udp/${port}": port => $port, protocol => 'udp' } }
       'drop':  { iptables::drop{  "udp/${port}": port => $port, protocol => 'udp' } }
       default: {
-        fail("iptables: unknown action '${action}' - use 'allow' or 'drop'")
+        fail("iptables: unknown action '${udp}' - use 'allow' or 'drop'")
       }
     }
   }

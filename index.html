@@ -43,23 +43,22 @@ hiera and just include the iptables module in your puppet configuration:</p>
 
 <p>Example hiera config:</p>
 
-<pre><code>iptables:
-  allow_icmp: 'true'
-  allow_localhost: 'true'
-  log_failures: 'true'
-  ports:
-    22:
-      tcp: 'allow'
-    80:
-      tcp: 'allow'
-    23:
-      tcp: 'drop'
-      udp: 'drop'
+<pre><code>iptables::allow_icmp: 'yes'
+iptables::allow_localhost: 'yes'
+iptables::log_failures: 'yes'
+iptables::ports:
+  22:
+    tcp: 'allow'
+  80:
+    tcp: 'allow'
+  23:
+    tcp: 'drop'
+    udp: 'drop'
 </code></pre>
 
 <p>This example configures iptables to allow incoming TCP connections to ports 22
 (ssh) and 80 (http), and silently drop all connections to port 23 (telnet).
-All ICMP and locahost connections will be allowed and failed connections to
+All ICMP and localhost connections will be allowed and failed connections to
 other ports will be logged to syslog.</p>
 
 <p>Notes:</p>
@@ -72,10 +71,10 @@ port 80 above.</p></li>
 <li><p>To avoid denied connections to a particular port being logged add a drop rule
 like that for port 23 above.</p></li>
 <li><p>To avoid any failed connections being logged set the log_failures parameter
-to false.</p></li>
-<li><p>By default all ICMP traffic is allowed.  Set allow_icmp to false to change
+to 'no'.</p></li>
+<li><p>By default all ICMP traffic is allowed.  Set allow_icmp to 'no' to change
 this.</p></li>
-<li><p>By default all localhost traffic is allowed.  Set allow_localhost to false to
+<li><p>By default all localhost traffic is allowed.  Set allow_localhost to 'no' to
 change this.</p></li>
 <li><p>If no iptables configuration is found then an allow rule is added for tcp/22
 (ssh) like the default iptables configuration.</p></li>
@@ -84,9 +83,9 @@ access is allowed.</p></li>
 </ul><h2>Parameters</h2>
 
 <ul>
-<li><p><em>logfailures</em>: whether or not to log failed connections that are not explicitly dropped. Default: true</p></li>
-<li><p><em>allow_icmp</em>: whether or not to allow all ICMP traffic. Default: true</p></li>
-<li><p><em>allow_localhost</em>: whether or not to allow all localhost (127.0.0.0/8) traffic. Default: true</p></li>
+<li><p><em>logfailures</em>: whether or not to log failed connections that are not explicitly dropped. Possible values: 'yes' or 'no'. Default: 'yes'</p></li>
+<li><p><em>allow_icmp</em>: whether or not to allow all ICMP traffic. Possible values: 'yes' or 'no'. Default: 'yes'</p></li>
+<li><p><em>allow_localhost</em>: whether or not to allow all localhost (127.0.0.0/8) traffic. Possible values: 'yes' or 'no'. Default: 'yes'</p></li>
 <li>
 <p><em>ports</em> hash:</p>
 
@@ -101,8 +100,6 @@ access is allowed.</p></li>
 </li>
 </ul>
 </li>
-<li><p><em>use_hiera</em>: set this to false when not using hiera which is useful if
-calling iptables as a parameterised class. Default: true</p></li>
 </ul><h2>Implementation</h2>
 
 <p>The iptables::allow and iptables::drop resources create files under
@@ -110,6 +107,8 @@ calling iptables as a parameterised class. Default: true</p></li>
 protocol (tcp or udp) and the port number.  Creating these files triggers an
 update script that combines all the entries together into a new
 /etc/sysconfig/iptables file and restarts the iptables service.</p>
+
+<p>The iptables::clean class removes all files under /root/iptables.d.</p>
 
 <h2>iptables::allow</h2>
 
@@ -140,8 +139,8 @@ update script that combines all the entries together into a new
 <h2>iptables::clean</h2>
 
 <p>Remove all files under /root/iptables.d.  This has the effect of starting with
-a clean configuration is required if you want to remove rules for ports defined
-previously.</p>
+a clean configuration and is required if you want to remove rules for ports
+defined previously.</p>
 
 <p>To use just temporarily:</p>
 

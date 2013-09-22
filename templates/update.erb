@@ -1,7 +1,8 @@
-<% $allow_icmp      = scope.lookupvar('::iptables::allow_icmp') -%>
-<% $allow_localhost = scope.lookupvar('::iptables::allow_localhost') -%>
-<% $log_failures    = scope.lookupvar('::iptables::log_failures') -%>
-<% $selinux         = scope.lookupvar('::selinux') -%>
+<% $truthy = [true, "yes", "true"] -%>
+<% $allow_icmp      = $truthy.include? scope.lookupvar('::iptables::allow_icmp') -%>
+<% $allow_localhost = $truthy.include? scope.lookupvar('::iptables::allow_localhost') -%>
+<% $log_failures    = $truthy.include? scope.lookupvar('::iptables::log_failures') -%>
+<% $selinux         = $truthy.include? scope.lookupvar('::selinux') -%>
 #!/usr/bin/perl
 
 opendir(DIR,'/root/iptables.d');
@@ -46,10 +47,10 @@ print OUTPUT <<'EOT';
 :FORWARD ACCEPT [0:0]
 :OUTPUT ACCEPT [0:0]
 -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-<% if $allow_icmp == 'yes' -%>
+<% if $allow_icmp -%>
 -A INPUT -p icmp -j ACCEPT
 <% end -%>
-<% if $allow_localhost == 'yes' -%>
+<% if $allow_localhost  -%>
 -A INPUT -i lo -j ACCEPT
 <% end -%>
 EOT
@@ -67,7 +68,7 @@ foreach my $port (sort keys %drop) {
 }
 # footer
 print OUTPUT <<'EOT';
-<% if $log_failures == 'yes' -%>
+<% if $log_failures -%>
 -A INPUT -j LOG --log-prefix "DROP INPUT: "
 <% end -%>
 -A INPUT -j REJECT --reject-with icmp-host-prohibited
@@ -76,6 +77,6 @@ COMMIT
 EOT
 close(OUTPUT);
 system("mv $tmpfile /etc/sysconfig/iptables");
-<% if $selinux == 'true' -%>
+<% if $selinux -%>
 system("/sbin/restorecon /etc/sysconfig/iptables");
 <% end -%>
